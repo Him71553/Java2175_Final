@@ -1,27 +1,31 @@
 package com.mybank.model;
 
 public class Bank {
-    protected String name;
-    protected String id;
-    protected double transferfee;
-    protected double exchangefee;
-    public Bank(String name,String id){
+    public final String name;
+    public final String id;
+    private double transferFee;
+    private double exchangeFee;
+
+    public Bank(String name, String id, double transferFee, double exchangeFee) {
         this.name = name;
         this.id = id;
+        this.transferFee = transferFee;
+        this.exchangeFee = exchangeFee;
     }
-    public void setTransferFee(double transferfee){
-        this.transferfee = transferfee;
+
+    public void setTransferFee(double newFee) {
+        this.transferFee = newFee;
     }
-    public void setExchangeFee(double exchangefee){
-        this.exchangefee = exchangefee;
+
+    public void setExchangeFee(double newFee) {
+        this.exchangeFee = newFee;
     }
-    public double getTransferfee(){
-        return transferfee;
+
+    public double getTransferFee() {
+        return transferFee;
     }
-    public double getExchangefee(){
-        return exchangefee;
-    }
-    public String getID(){
-        return id;
+
+    public double getExchangeFee() {
+        return exchangeFee;
     }
 }
