@@ -1,0 +1,23 @@
+//介面
+/Common
+==================
+1.Create Account
+2.Login
+==================
+//Admin
+==================
+1.Create Bank
+2.SetExchangeFee
+3.SetTransferFee
+4.SetBalance
+6.LogOut
+==================
+//User
+==================
+1.CheckFee
+3.Withdraw
+4.CheckBalance
+5.Transfer
+6.Exchange
+7.LogOut
+==================
