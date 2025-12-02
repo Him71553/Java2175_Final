@@ -9,10 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -47,13 +44,17 @@ public class Account {
 
     public static Account createAccount(String name, String id, String pwd, String bankId) {
         try {
-            final Connection conn = Database.getConnection();
-            final Statement stmt = conn.createStatement();
             final String hashedPwd = hashPassword(pwd);
-            stmt.executeUpdate(String.format("""
+            final Connection conn = Database.getConnection();
+            final PreparedStatement stmt = conn.prepareStatement("""
                     INSERT INTO accounts (name, id, bankId, hashedPwd)
-                    VALUES ('%s', '%s', '%s', '%s');
-                    """, name, id, bankId, hashedPwd));
+                    VALUES (?, ?, ?, ?);
+                    """);
+            stmt.setString(1, name);
+            stmt.setString(2, id);
+            stmt.setString(3, bankId);
+            stmt.setString(4, hashedPwd);
+            stmt.executeUpdate();
             stmt.close();
             conn.close();
 
@@ -99,12 +100,14 @@ public class Account {
     public boolean setBalance(int newBalance) {
         try {
             final Connection conn = Database.getConnection();
-            final Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("""
+            final PreparedStatement stmt = conn.prepareStatement("""
                     UPDATE accounts
-                    SET balance = %d
-                    WHERE id = %s, bankId = %s;
-                    """, newBalance, id, bankId));
+                    SET balance = ?
+                    WHERE id = ?, bankId = ?;
+                    """);
+            stmt.setInt(1, newBalance);
+            stmt.setString(2, id);
+            stmt.setString(3, bankId);
             this.balance = newBalance;
             stmt.close();
             conn.close();
