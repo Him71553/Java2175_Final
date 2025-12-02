@@ -2,10 +2,7 @@ package com.mybank.model;
 
 import com.mybank.service.Database;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,17 +41,19 @@ public class Bank {
     public static Bank createBank(String name, String id, double transferFee, double exchangeFee) {
         try {
             final Connection conn = Database.getConnection();
-            final Statement stmt = conn.createStatement();
-            stmt.executeUpdate(String.format("""
+            final PreparedStatement stmt = conn.prepareStatement("""
                     INSERT INTO banks (name, id, transferFee, exchangeFee)
-                    VALUES ('%s', '%s', %f, %f);
-                    """, name, id, transferFee, exchangeFee));
+                    VALUES (?, ?, ?, ?);
+                    """);
+            stmt.setString(1, name);
+            stmt.setString(2, id);
+            stmt.setDouble(3, transferFee);
+            stmt.setDouble(4, exchangeFee);
             stmt.close();
             conn.close();
 
-            return new Bank(name,id,transferFee,exchangeFee);
-        }
-        catch (Exception e){
+            return new Bank(name, id, transferFee, exchangeFee);
+        } catch (Exception e) {
             e.printStackTrace(System.err);
             return null;
         }
