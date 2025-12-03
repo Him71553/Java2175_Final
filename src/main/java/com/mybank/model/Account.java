@@ -33,7 +33,7 @@ public class Account {
             final String hashedPwd = rs.getString("hashedPwd");
             final int balance = rs.getInt("balance");
             final Account acc = new Account(name, id, bankId, hashedPwd);
-            acc.setBalance(balance);
+            acc.setBalance(balance,id,bankId);
             accounts.add(acc);
         }
         rs.close();
@@ -97,7 +97,7 @@ public class Account {
         this.hashedPwd = hashedPwd;
     }
 
-    public boolean setBalance(int newBalance) {
+    public boolean setBalance(int newBalance,String id,String bankId) {
         try {
             final Connection conn = Database.getConnection();
             final PreparedStatement stmt = conn.prepareStatement("""
@@ -108,7 +108,8 @@ public class Account {
             stmt.setInt(1, newBalance);
             stmt.setString(2, id);
             stmt.setString(3, bankId);
-            this.balance = newBalance;
+            stmt.executeUpdate();
+            //this.balance = newBalance;
             stmt.close();
             conn.close();
             return true;
@@ -122,11 +123,11 @@ public class Account {
         return balance;
     }
 
-    public boolean withdraw(int amount) {
+    /*public boolean withdraw(int amount) {
         if (balance < amount) {
             return false;
         }
 
         return setBalance(balance - amount);
-    }
+    }*/
 }

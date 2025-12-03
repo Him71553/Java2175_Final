@@ -42,10 +42,16 @@ public class Bank {
             stmt.setString(2, id);
             stmt.setDouble(3, transferFee);
             stmt.setDouble(4, exchangeFee);
-            stmt.close();
-            conn.close();
+            int rowsAffected  = stmt.executeUpdate();
+            //stmt.close();
+            //conn.close();
 
-            return new Bank(name, id, transferFee, exchangeFee);
+            if(rowsAffected > 0) {
+                return new Bank(name, id, transferFee, exchangeFee);
+            }
+            else{
+                return null;
+            }
         } catch (Exception e) {
             e.printStackTrace(System.err);
             return null;
@@ -59,7 +65,7 @@ public class Bank {
         this.exchangeFee = exchangeFee;
     }
 
-    public boolean setTransferFee(double newFee) {
+    public static boolean setTransferFee(double newFee,String bankID) {
         try {
             final Connection conn = Database.getConnection();
             final PreparedStatement stmt = conn.prepareStatement("""
@@ -68,8 +74,9 @@ public class Bank {
                     WHERE id = ?;
                     """);
             stmt.setDouble(1, newFee);
-            stmt.setString(2, id);
-            this.transferFee = newFee;
+            stmt.setString(2, bankID);
+            stmt.executeUpdate();
+            //this.transferFee = newFee;
             stmt.close();
             conn.close();
             return true;
@@ -79,7 +86,7 @@ public class Bank {
         }
     }
 
-    public boolean setExchangeFee(double newFee) {
+    public static boolean setExchangeFee(double newFee,String bankID) {
         try {
             final Connection conn = Database.getConnection();
             final PreparedStatement stmt = conn.prepareStatement("""
@@ -88,8 +95,9 @@ public class Bank {
                     WHERE id = ?;
                     """);
             stmt.setDouble(1, newFee);
-            stmt.setString(2, id);
-            this.exchangeFee = newFee;
+            stmt.setString(2, bankID);
+            stmt.executeUpdate();
+            //this.exchangeFee = newFee;
             stmt.close();
             conn.close();
             return true;
