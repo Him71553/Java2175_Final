@@ -15,7 +15,6 @@ public class Main {
     private static List<Account> accounts;
     private static Account account;
     private static boolean isAdmin = false;
-
     public static void main(String[] args) throws Exception {
         Database.init();
         banks = Bank.getBanks();
@@ -70,7 +69,6 @@ public class Main {
                         System.out.println("創建失敗");
                         continue;
                     }
-
                     banks.add(newBank);
                     break;
                 case 2:
@@ -78,13 +76,34 @@ public class Main {
                         System.out.printf("(%s) %s\n", bank.id, bank.name);
                     }
                     System.out.print("請選擇銀行: ");
-                    final String bankId = scanner.next();
-                    if (banks.stream().noneMatch(bank -> bankId.equals(bank.id))) {
+                    final String bankId1 = scanner.next();
+                    if (banks.stream().noneMatch(bank -> bankId1.equals(bank.id))) {
                         System.out.println("無效的選擇。");
                         continue;
                     }
+                    System.out.println("請輸入換匯費率: ");
+                    final float exchangeFee1 = scanner.nextFloat();
+                    if(Bank.setExchangeFee(exchangeFee1,bankId1)){
+                        System.out.println("設定完成");
+                    }
+                    else System.out.println("設定失敗");
                     break;
                 case 3:
+                    for (final Bank bank : banks) {
+                        System.out.printf("(%s) %s\n", bank.id, bank.name);
+                    }
+                    System.out.print("請選擇銀行: ");
+                    final String bankId2 = scanner.next();
+                    if (banks.stream().noneMatch(bank -> bankId2.equals(bank.id))) {
+                        System.out.println("無效的選擇。");
+                        continue;
+                    }
+                    System.out.println("請輸入轉帳費率: ");
+                    final float transferFee1 = scanner.nextFloat();
+                    if(Bank.setTransferFee(transferFee1,bankId2)){
+                        System.out.println("設定完成");
+                    }
+                    else System.out.println("設定失敗");
                     break;
                 case 4:
                     break;
