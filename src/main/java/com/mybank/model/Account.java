@@ -103,7 +103,7 @@ public class Account {
             final PreparedStatement stmt = conn.prepareStatement("""
                     UPDATE accounts
                     SET balance = ?
-                    WHERE id = ?, bankId = ?;
+                    WHERE id = ? AND bankId = ?;
                     """);
             stmt.setInt(1, newBalance);
             stmt.setString(2, id);
