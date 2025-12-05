@@ -42,15 +42,13 @@ public class Bank {
             stmt.setString(2, id);
             stmt.setDouble(3, transferFee);
             stmt.setDouble(4, exchangeFee);
-            int rowsAffected  = stmt.executeUpdate();
+            final int rowsAffected = stmt.executeUpdate();
             stmt.close();
             conn.close();
-            if(rowsAffected > 0) {
+            if (rowsAffected > 0) {
                 return new Bank(name, id, transferFee, exchangeFee);
             }
-            else{
-                return null;
-            }
+            return null;
         } catch (Exception e) {
             e.printStackTrace(System.err);
             return null;
@@ -106,6 +104,7 @@ public class Bank {
             return false;
         }
     }
+
     public double getTransferFee() {
         return transferFee;
     }
