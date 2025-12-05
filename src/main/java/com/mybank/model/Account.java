@@ -33,7 +33,7 @@ public class Account {
             final String hashedPwd = rs.getString("hashedPwd");
             final int balance = rs.getInt("balance");
             final Account acc = new Account(name, id, bankId, hashedPwd);
-            acc.setBalance(balance,id,bankId);
+            acc.setBalance(balance);
             accounts.add(acc);
         }
         rs.close();
@@ -97,7 +97,7 @@ public class Account {
         this.hashedPwd = hashedPwd;
     }
 
-    public boolean setBalance(int newBalance,String id,String bankId) {
+    public boolean setBalance(int newBalance) {
         try {
             final Connection conn = Database.getConnection();
             final PreparedStatement stmt = conn.prepareStatement("""
