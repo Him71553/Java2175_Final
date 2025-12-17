@@ -62,8 +62,18 @@ public class Main {
 
                     System.out.print("請輸入轉帳費率: ");
                     final float transferFee = scanner.nextFloat();
+                    if (transferFee < 0) {
+                        System.out.println("無效的轉帳費率。");
+                        continue;
+                    }
+
                     System.out.print("請輸入換匯費率: ");
                     final float exchangeFee = scanner.nextFloat();
+                    if (exchangeFee < 0) {
+                        System.out.println("無效的換匯費率。");
+                        continue;
+                    }
+
                     final Bank newBank = Bank.createBank(bankName, bankID, transferFee, exchangeFee);
                     if (newBank == null) {
                         System.out.println("創建失敗");
@@ -89,6 +99,11 @@ public class Main {
 
                     System.out.println("請輸入換匯費率: ");
                     final float exchangeFee = scanner.nextFloat();
+                    if (exchangeFee < 0) {
+                        System.out.println("無效的費率。");
+                        continue;
+                    }
+
                     selectedBank.setExchangeFee(exchangeFee);
                     System.out.println("設定完成");
                     break;
@@ -110,6 +125,11 @@ public class Main {
 
                     System.out.println("請輸入換匯費率: ");
                     final float transferFee = scanner.nextFloat();
+                    if (transferFee < 0) {
+                        System.out.println("無效的費率。");
+                        continue;
+                    }
+
                     selectedBank.setTransferFee(transferFee);
                     System.out.println("設定完成");
                     break;
@@ -146,6 +166,11 @@ public class Main {
 
                     System.out.print("請輸入金額: ");
                     final int balance = scanner.nextInt();
+                    if (balance < 0) {
+                        System.out.println("無效的金額。");
+                        continue;
+                    }
+
                     final Account acc = accList.get(index - 1);
                     final boolean result = acc.setBalance(balance);
                     if (!result) {
