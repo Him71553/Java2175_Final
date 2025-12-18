@@ -5,9 +5,7 @@ import com.mybank.service.Database;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.sql.*;
 import java.util.ArrayList;
@@ -52,18 +50,18 @@ public class Account {
             while (true) {
                 try {
                     id = bankId + generateRandomId();
-            final PreparedStatement stmt = conn.prepareStatement("""
+                    final PreparedStatement stmt = conn.prepareStatement("""
                             INSERT INTO accounts (id, userId, name, bankId, hashedPwd)
                             VALUES (?, ?, ?, ?, ?);
-                    """);
+                            """);
                     stmt.setString(1, id);
                     stmt.setString(2, userId);
                     stmt.setString(3, name);
                     stmt.setString(4, bankId);
                     stmt.setString(5, hashedPwd);
-            stmt.executeUpdate();
-            stmt.close();
-            conn.close();
+                    stmt.executeUpdate();
+                    stmt.close();
+                    conn.close();
                     break;
                 } catch (SQLException ignored) {
                 }
@@ -86,7 +84,7 @@ public class Account {
         return sb.toString();
     }
 
-    private static String hashPassword(String pwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private static String hashPassword(String pwd) throws Exception {
         final SecureRandom random = new SecureRandom();
         final byte[] salt = new byte[16];
         random.nextBytes(salt);
