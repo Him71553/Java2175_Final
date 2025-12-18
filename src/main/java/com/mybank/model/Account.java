@@ -110,7 +110,7 @@ public class Account {
             final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
             final byte[] computedHash = factory.generateSecret(spec).getEncoded();
             return MessageDigest.isEqual(hash, computedHash);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             return false;
         }
     }
