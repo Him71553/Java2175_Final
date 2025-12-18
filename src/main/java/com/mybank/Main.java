@@ -46,7 +46,7 @@ public class Main {
 
             final int action = scanner.nextInt();
             if (action < 1 || action > 5) {
-                System.out.println("無效的選擇");
+                System.out.println("無效的選擇。");
                 continue;
             }
 
@@ -55,14 +55,14 @@ public class Main {
                     System.out.print("請註冊銀行ID: ");
                     final String bankID = scanner.next();
                     if (banks.stream().anyMatch(bank -> bankID.equals(bank.id))) {
-                        System.out.println("此ID已有銀行註冊");
+                        System.out.println("此ID已有銀行註冊。");
                         continue;
                     }
 
                     System.out.print("請註冊銀行名稱: ");
                     final String bankName = scanner.next();
                     if (banks.stream().anyMatch(bank -> bankName.equals(bank.name))) {
-                        System.out.println("此名稱已有銀行註冊");
+                        System.out.println("此名稱已有銀行註冊。");
                         continue;
                     }
 
@@ -82,7 +82,7 @@ public class Main {
 
                     final Bank newBank = Bank.createBank(bankName, bankID, transferFee, exchangeFee);
                     if (newBank == null) {
-                        System.out.println("創建失敗");
+                        System.out.println("創建失敗。");
                         continue;
                     }
                     banks.add(newBank);
@@ -111,7 +111,7 @@ public class Main {
                     }
 
                     selectedBank.setExchangeFee(exchangeFee);
-                    System.out.println("設定完成");
+                    System.out.println("設定完成。");
                     break;
                 }
                 case 3: {
@@ -137,7 +137,7 @@ public class Main {
                     }
 
                     selectedBank.setTransferFee(transferFee);
-                    System.out.println("設定完成");
+                    System.out.println("設定完成。");
                     break;
                 }
                 case 4: {
@@ -244,6 +244,7 @@ public class Main {
 
                 accounts.add(acc);
                 account = acc;
+                System.out.println("成功開戶。");
             } else if (action == 2) {
                 for (final Bank bank : banks) {
                     System.out.printf("(%s) %s\n", bank.id, bank.name);
