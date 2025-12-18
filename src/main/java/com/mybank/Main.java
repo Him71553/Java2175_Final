@@ -156,7 +156,7 @@ public class Main {
                         continue;
                     }
 
-                    System.out.println("請輸入換匯費率: ");
+                    System.out.println("請輸入轉帳費率: ");
                     final float transferFee = scanner.nextFloat();
                     if (transferFee < 0) {
                         System.out.println("無效的費率。");
