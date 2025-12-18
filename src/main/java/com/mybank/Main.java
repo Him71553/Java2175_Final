@@ -4,11 +4,7 @@ import com.mybank.model.Account;
 import com.mybank.model.Bank;
 import com.mybank.service.Database;
 
-import java.io.IOException;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
