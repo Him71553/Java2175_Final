@@ -4,6 +4,7 @@ import com.mybank.model.Account;
 import com.mybank.model.Bank;
 import com.mybank.service.Database;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
@@ -21,10 +22,15 @@ public class Main {
         accounts = Account.getAccounts();
 
         while (true) {
+            try {
             if (isAdmin) {
                 adminMenu();
             } else if (account == null) {
                 entryMenu();
+            }
+            } catch (InputMismatchException ignored) {
+                System.out.println("無效的輸入。");
+                scanner.nextLine();
             }
         }
     }
