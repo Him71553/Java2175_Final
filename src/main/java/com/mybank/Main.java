@@ -28,6 +28,7 @@ public class Main {
             } catch (InputMismatchException ignored) {
                 System.out.println("無效的輸入。");
                 pause();
+            } catch (NoSuchElementException ignored) {
             }
         }
     }
