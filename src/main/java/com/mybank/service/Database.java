@@ -13,7 +13,7 @@ public class Database {
             final Statement stmt = conn.createStatement();
             stmt.executeUpdate("""
                     CREATE TABLE IF NOT EXISTS banks (
-                        id TEXT UNIQUE NOT NULL,
+                        id TEXT PRIMARY KEY,
                         name TEXT UNIQUE NOT NULL,
                         transferFee REAL NOT NULL,
                         exchangeFee REAL NOT NULL
