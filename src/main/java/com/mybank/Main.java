@@ -38,11 +38,8 @@ public class Main {
 
     private static void pause() {
         System.out.print("按 Enter 鍵繼續...");
-        try {
-            System.in.read();
-            System.in.read(new byte[System.in.available()]);
-        } catch (IOException ignored) {
-        }
+        scanner.nextLine();
+        scanner.nextLine();
     }
 
     private static void resetCursor() {
