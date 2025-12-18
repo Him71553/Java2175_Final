@@ -15,8 +15,9 @@ import java.util.Base64;
 import java.util.List;
 
 public class Account {
-    public final String name;
     public final String id;
+    public final String userId;
+    public final String name;
     public final String bankId;
     public final String hashedPwd;
     private int balance;
@@ -27,12 +28,13 @@ public class Account {
         final Statement stmt = conn.createStatement();
         final ResultSet rs = stmt.executeQuery("SELECT * FROM accounts;");
         while (rs.next()) {
-            final String name = rs.getString("name");
             final String id = rs.getString("id");
+            final String userId = rs.getString("userId");
+            final String name = rs.getString("name");
             final String bankId = rs.getString("bankId");
             final String hashedPwd = rs.getString("hashedPwd");
             final int balance = rs.getInt("balance");
-            final Account acc = new Account(name, id, bankId, hashedPwd);
+            final Account acc = new Account(id, userId, name, bankId, hashedPwd);
             acc.setBalance(balance);
             accounts.add(acc);
         }
@@ -42,27 +44,46 @@ public class Account {
         return accounts;
     }
 
-    public static Account createAccount(String name, String id, String pwd, String bankId) {
+    public static Account createAccount(String userId, String name, String pwd, String bankId) {
         try {
             final String hashedPwd = hashPassword(pwd);
             final Connection conn = Database.getConnection();
+            String id;
+            while (true) {
+                try {
+                    id = bankId + generateRandomId();
             final PreparedStatement stmt = conn.prepareStatement("""
-                    INSERT INTO accounts (name, id, bankId, hashedPwd)
-                    VALUES (?, ?, ?, ?);
+                            INSERT INTO accounts (id, userId, name, bankId, hashedPwd)
+                            VALUES (?, ?, ?, ?, ?);
                     """);
-            stmt.setString(1, name);
-            stmt.setString(2, id);
-            stmt.setString(3, bankId);
-            stmt.setString(4, hashedPwd);
+                    stmt.setString(1, id);
+                    stmt.setString(2, userId);
+                    stmt.setString(3, name);
+                    stmt.setString(4, bankId);
+                    stmt.setString(5, hashedPwd);
             stmt.executeUpdate();
             stmt.close();
             conn.close();
+                    break;
+                } catch (SQLException ignored) {
+                }
+            }
 
-            return new Account(name, id, bankId, hashedPwd);
+            return new Account(id, userId, name, bankId, hashedPwd);
         } catch (Exception e) {
             e.printStackTrace(System.err);
             return null;
         }
+
+    }
+
+    private static String generateRandomId() {
+        final SecureRandom random = new SecureRandom();
+        final StringBuilder sb = new StringBuilder(14);
+        for (int i = 0; i < 14; i++) {
+            sb.append(random.nextInt(10));
+        }
+        return sb.toString();
     }
 
     private static String hashPassword(String pwd) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -90,9 +111,10 @@ public class Account {
         }
     }
 
-    private Account(String name, String id, String bankId, String hashedPwd) {
-        this.name = name;
+    private Account(String id, String userId, String name, String bankId, String hashedPwd) {
         this.id = id;
+        this.userId = userId;
+        this.name = name;
         this.bankId = bankId;
         this.hashedPwd = hashedPwd;
     }
