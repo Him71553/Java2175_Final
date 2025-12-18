@@ -257,8 +257,8 @@ public class Main {
                 }
 
                 System.out.print("輸入身分證字號: ");
-                final String id = scanner.next();
-                if (accounts.stream().anyMatch(acc -> bankId.equals(acc.bankId) && id.equals(acc.id))) {
+                final String userId = scanner.next();
+                if (accounts.stream().anyMatch(acc -> bankId.equals(acc.bankId) && userId.equals(acc.userId))) {
                     System.out.println("你在該銀行已經擁有戶頭。");
                     pause();
                     continue;
@@ -276,7 +276,7 @@ public class Main {
                     continue;
                 }
 
-                final Account acc = Account.createAccount(name, id, pwd, bankId);
+                final Account acc = Account.createAccount(userId, name, pwd, bankId);
                 if (acc == null) {
                     System.out.println("開戶失敗。");
                     pause();
