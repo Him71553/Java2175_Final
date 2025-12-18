@@ -49,11 +49,11 @@ public class Account {
             String id;
             while (true) {
                 try {
-                    id = bankId + generateRandomId();
                     final PreparedStatement stmt = conn.prepareStatement("""
                             INSERT INTO accounts (id, userId, name, bankId, hashedPwd)
                             VALUES (?, ?, ?, ?, ?);
                             """);
+                    id = bankId + generateRandomId();
                     stmt.setString(1, id);
                     stmt.setString(2, userId);
                     stmt.setString(3, name);
@@ -63,7 +63,13 @@ public class Account {
                     stmt.close();
                     conn.close();
                     break;
-                } catch (SQLException ignored) {
+                } catch (SQLException e) {
+                    final int errorCode = e.getErrorCode();
+                    if (errorCode == 19 || errorCode == 1555 || errorCode == 5) {
+                        continue;
+                    }
+
+                    return null;
                 }
             }
 
