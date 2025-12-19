@@ -152,4 +152,22 @@ public class Account {
     public int getBalance() {
         return balance;
     }
+
+    public boolean transfer(Account target, int amount) {
+        final int originalBalance = getBalance();
+        final double transferFee = bank.id.equals(target.bank.id) ? 0 : bank.getTransferFee();
+        final int amountWithFee = amount + (int) (amount * transferFee);
+        final boolean selfTransaction = setBalance(originalBalance - amountWithFee);
+        if (!selfTransaction) {
+            return false;
+        }
+
+        final boolean targetTransaction = target.setBalance(target.getBalance() + amount);
+        if (!targetTransaction) {
+            setBalance(originalBalance);
+            return false;
+        }
+
+        return true;
+    }
 }
