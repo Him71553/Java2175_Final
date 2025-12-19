@@ -31,6 +31,13 @@ public class Database {
                         FOREIGN KEY (bankId) REFERENCES banks(id)
                     );
                     """);
+            stmt.executeUpdate("""
+                    CREATE TABLE IF NOT EXISTS currencies (
+                        id INTEGER PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        exchangeRate REAL NOT NULL
+                    )
+                    """);
         } catch (SQLException e) {
             e.printStackTrace(System.err);
         }
