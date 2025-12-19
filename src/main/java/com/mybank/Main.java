@@ -16,7 +16,9 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Database.init();
         banks = Bank.getBanks();
-        accounts = Account.getAccounts();
+        for (Bank bank : banks) {
+            accounts.addAll(Account.getAccounts(bank));
+        }
 
         while (true) {
             try {
@@ -176,7 +178,7 @@ public class Main {
                     }
 
                     final List<Account> accList = accounts.stream()
-                            .filter(a -> bankId.equals(a.bankId))
+                            .filter(a -> bankId.equals(a.bank.id))
                             .toList();
                     if (accList.isEmpty()) {
                         System.out.println("這個銀行下沒有用戶。");
@@ -244,7 +246,11 @@ public class Main {
                 }
                 System.out.print("\n選擇銀行: ");
                 final String bankId = scanner.next();
-                if (banks.stream().noneMatch(bank -> bankId.equals(bank.id))) {
+                final Bank selectedBank = banks.stream()
+                        .filter(b -> bankId.equals(b.id))
+                        .findFirst()
+                        .orElse(null);
+                if (selectedBank == null) {
                     System.out.println("無效的選擇。");
                     pause();
                     continue;
@@ -252,7 +258,7 @@ public class Main {
 
                 System.out.print("輸入身分證字號: ");
                 final String userId = scanner.next();
-                if (accounts.stream().anyMatch(acc -> bankId.equals(acc.bankId) && userId.equals(acc.userId))) {
+                if (accounts.stream().anyMatch(acc -> bankId.equals(acc.bank.id) && userId.equals(acc.userId))) {
                     System.out.println("你在該銀行已經擁有戶頭。");
                     pause();
                     continue;
@@ -270,7 +276,7 @@ public class Main {
                     continue;
                 }
 
-                final Account acc = Account.createAccount(userId, name, pwd, bankId);
+                final Account acc = Account.createAccount(userId, name, pwd, selectedBank);
                 if (acc == null) {
                     System.out.println("開戶失敗。");
                     pause();
@@ -298,7 +304,7 @@ public class Main {
                 System.out.print("輸入密碼: ");
                 final String pwd = scanner.next();
                 final Account acc = accounts.stream()
-                        .filter(a -> bankId.equals(a.bankId) && id.equals(a.id))
+                        .filter(a -> bankId.equals(a.bank.id) && id.equals(a.id))
                         .findFirst()
                         .orElse(null);
                 if (acc == null) {
