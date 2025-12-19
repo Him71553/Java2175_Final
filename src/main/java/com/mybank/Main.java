@@ -29,6 +29,8 @@ public class Main {
                     adminMenu();
                 } else if (account == null) {
                     entryMenu();
+                } else {
+                    userMenu();
                 }
             } catch (InputMismatchException ignored) {
                 System.out.println("無效的輸入。");
@@ -47,6 +49,113 @@ public class Main {
     private static void resetCursor() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    private static void userMenu() {
+        while (account != null) {
+            resetCursor();
+            System.out.println("1. 轉帳");
+            System.out.println("2. 換匯");
+            System.out.println("3. 登出\n");
+            System.out.print("選擇動作: ");
+
+            final int action = scanner.nextInt();
+            if (action < 1 || action > 5) {
+                System.out.println("無效的選擇。");
+                pause();
+                continue;
+            }
+
+            switch (action) {
+                case 1: {
+                    for (final Bank bank : banks) {
+                        System.out.printf("(%s) %s\n", bank.id, bank.name);
+                    }
+                    System.out.print("請選擇銀行: ");
+                    final String bankId = scanner.next();
+                    if (banks.stream().noneMatch(b -> bankId.equals(b.id))) {
+                        System.out.println("無效的選擇。");
+                        pause();
+                        continue;
+                    }
+
+                    System.out.print("請輸入轉帳對象帳戶: ");
+                    final String targetId = scanner.next();
+                    final Account target = accounts.stream()
+                            .filter(a -> targetId.equals(a.id))
+                            .findFirst()
+                            .orElse(null);
+                    if (target == null) {
+                        System.out.println("輸入的帳戶不存在。");
+                        pause();
+                        continue;
+                    }
+
+                    System.out.print("請輸入轉帳金額: ");
+                    final int amount = scanner.nextInt();
+                    if (amount < 0) {
+                        System.out.println("無效的金額。");
+                        pause();
+                        continue;
+                    }
+
+                    final boolean transaction = account.transfer(target, amount);
+                    if (!transaction) {
+                        System.out.println("轉帳失敗。");
+                        pause();
+                        continue;
+                    }
+
+                    System.out.println("轉帳成功。");
+                    pause();
+                    break;
+                }
+                case 2: {
+                    for (int i = 0; i < currencies.size(); i++) {
+                        final Currency currency = currencies.get(i);
+                        System.out.printf("%d. %s (%f)\n", i + 1, currency.name, currency.exchangeRate);
+                    }
+                    System.out.print("請選擇貨幣: ");
+                    final int index = scanner.nextInt();
+                    if (index < 1 || index > currencies.size()) {
+                        System.out.println("無效的選擇。");
+                        pause();
+                        continue;
+                    }
+
+                    System.out.print("請輸入欲換取數量: ");
+                    final int amount = scanner.nextInt();
+                    if (amount < 1) {
+                        System.out.println("無效的數量。");
+                        pause();
+                        continue;
+                    }
+
+                    final Currency currency = currencies.get(index);
+                    final int balance = account.getBalance();
+                    final int cost = (int) Math.ceil(amount / currency.exchangeRate);
+                    if (cost > balance) {
+                        System.out.println("你的餘額不足。");
+                        pause();
+                        continue;
+                    }
+
+                    final boolean transaction = account.setBalance(balance - cost);
+                    if (!transaction) {
+                        System.out.println("換匯失敗。");
+                        pause();
+                        continue;
+                    }
+
+                    System.out.println("換匯成功");
+                    pause();
+                    break;
+                }
+                case 3:
+                    account = null;
+                    break;
+            }
+        }
     }
 
     private static void adminMenu() {
