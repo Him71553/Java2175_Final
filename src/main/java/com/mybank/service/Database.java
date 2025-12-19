@@ -32,7 +32,6 @@ public class Database {
                 stmt.close();
             }
             conn.commit();
-            conn.close();
             return true;
         } catch (Exception e) {
             e.printStackTrace(System.err);
