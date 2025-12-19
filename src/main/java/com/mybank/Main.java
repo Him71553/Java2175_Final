@@ -94,7 +94,7 @@ public class Main {
 
                     System.out.print("請輸入轉帳金額: ");
                     final int amount = scanner.nextInt();
-                    if (amount < 0) {
+                    if (amount < 1) {
                         System.out.println("無效的金額。");
                         pause();
                         continue;
