@@ -16,23 +16,27 @@ public class Account {
     public final String id;
     public final String userId;
     public final String name;
-    public final String bankId;
+    public final Bank bank;
     public final String hashedPwd;
     private int balance;
 
-    public static List<Account> getAccounts() throws SQLException {
+    public static List<Account> getAccounts(Bank bank) throws SQLException {
         final List<Account> accounts = new ArrayList<>();
         final Connection conn = Database.getConnection();
-        final Statement stmt = conn.createStatement();
-        final ResultSet rs = stmt.executeQuery("SELECT * FROM accounts;");
+        final PreparedStatement stmt = conn.prepareStatement("""
+                SELECT * FROM accounts
+                WHERE bankId = ?
+                """);
+        stmt.setString(1, bank.id);
+
+        final ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
             final String id = rs.getString("id");
             final String userId = rs.getString("userId");
             final String name = rs.getString("name");
-            final String bankId = rs.getString("bankId");
             final String hashedPwd = rs.getString("hashedPwd");
             final int balance = rs.getInt("balance");
-            final Account acc = new Account(id, userId, name, bankId, hashedPwd);
+            final Account acc = new Account(id, userId, name, bank, hashedPwd);
             acc.setBalance(balance);
             accounts.add(acc);
         }
@@ -42,7 +46,7 @@ public class Account {
         return accounts;
     }
 
-    public static Account createAccount(String userId, String name, String pwd, String bankId) {
+    public static Account createAccount(String userId, String name, String pwd, Bank bank) {
         try {
             final String hashedPwd = hashPassword(pwd);
             final Connection conn = Database.getConnection();
@@ -53,11 +57,11 @@ public class Account {
                             INSERT INTO accounts (id, userId, name, bankId, hashedPwd)
                             VALUES (?, ?, ?, ?, ?);
                             """);
-                    id = bankId + generateRandomId();
+                    id = bank.id + generateRandomId();
                     stmt.setString(1, id);
                     stmt.setString(2, userId);
                     stmt.setString(3, name);
-                    stmt.setString(4, bankId);
+                    stmt.setString(4, bank.id);
                     stmt.setString(5, hashedPwd);
                     stmt.executeUpdate();
                     stmt.close();
@@ -73,7 +77,7 @@ public class Account {
                 }
             }
 
-            return new Account(id, userId, name, bankId, hashedPwd);
+            return new Account(id, userId, name, bank, hashedPwd);
         } catch (Exception e) {
             e.printStackTrace(System.err);
             return null;
@@ -115,11 +119,11 @@ public class Account {
         }
     }
 
-    private Account(String id, String userId, String name, String bankId, String hashedPwd) {
+    private Account(String id, String userId, String name, Bank bank, String hashedPwd) {
         this.id = id;
         this.userId = userId;
         this.name = name;
-        this.bankId = bankId;
+        this.bank = bank;
         this.hashedPwd = hashedPwd;
     }
 
@@ -133,7 +137,7 @@ public class Account {
                     """);
             stmt.setInt(1, newBalance);
             stmt.setString(2, id);
-            stmt.setString(3, bankId);
+            stmt.setString(3, bank.id);
             stmt.executeUpdate();
             this.balance = newBalance;
             stmt.close();
