@@ -56,8 +56,10 @@ public class Main {
     private static void userMenu() {
         while (account != null) {
             resetCursor();
-            final int balance = account.getBalance();
-            System.out.println("餘額 : " + balance);
+            System.out.println("================================");
+            System.out.printf(" 使用者: %s (%s)\n", account.name, account.id);
+            System.out.printf(" 帳戶本位幣餘額 (TWD): %d 元\n", account.getBalance());
+            System.out.println("================================");
             System.out.println("1. 轉帳");
             System.out.println("2. 換匯");
             System.out.println("3. 登出\n");
