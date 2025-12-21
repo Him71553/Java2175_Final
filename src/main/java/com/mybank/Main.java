@@ -6,10 +6,6 @@ import com.mybank.model.Currency;
 import com.mybank.service.Database;
 
 import java.security.spec.RSAOtherPrimeInfo;
-<<<<<<< HEAD
-import java.sql.SQLException;
-=======
->>>>>>> 34ef8d7 (chore:Show balance when login)
 import java.util.*;
 
 public class Main {
@@ -60,23 +56,17 @@ public class Main {
     private static void userMenu() {
         while (account != null) {
             resetCursor();
-<<<<<<< HEAD
             System.out.println("================================");
             System.out.printf(" 使用者: %s (%s)\n", account.name, account.id);
             System.out.printf(" 帳戶本位幣餘額 (TWD): %d 元\n", account.getBalance());
             System.out.println("================================");
-=======
-            final int balance = account.getBalance();
-            System.out.println("餘額 : " + balance);
->>>>>>> 34ef8d7 (chore:Show balance when login)
             System.out.println("1. 轉帳");
             System.out.println("2. 換匯");
-            System.out.println("3. 查看所有資產");
-            System.out.println("4. 登出\n");
+            System.out.println("3. 登出\n");
             System.out.print("選擇動作: ");
 
             final int action = scanner.nextInt();
-            if (action < 1 || action > 4) {
+            if (action < 1 || action > 3) {
                 System.out.println("無效的選擇。");
                 pause();
                 continue;
@@ -135,55 +125,46 @@ public class Main {
                     break;
                 }
                 case 2: {
-                    List<Currency> foreignCurrencies = currencies.stream()
-                            .filter(c -> !c.name.equalsIgnoreCase("TWD"))
-                            .toList();
-                    for (int i = 0; i < foreignCurrencies.size(); i++) {
-                        final Currency currency = foreignCurrencies.get(i);
-                        System.out.printf("%d. %s (匯率: %f)\n", i + 1, currency.name, currency.exchangeRate);
+                    for (int i = 0; i < currencies.size(); i++) {
+                        final Currency currency = currencies.get(i);
+                        System.out.printf("%d. %s (%f)\n", i + 1, currency.name, currency.exchangeRate);
                     }
-                    System.out.print("請選擇欲換取的貨幣: ");
+                    System.out.print("請選擇貨幣: ");
                     final int index = scanner.nextInt();
                     if (index < 1 || index > currencies.size()) {
                         System.out.println("無效的選擇。");
-                        pause(); continue;
+                        pause();
+                        continue;
                     }
-                    System.out.print("請輸入欲使用的 TWD 金額: ");
+
+                    System.out.print("請輸入欲換取金額: ");
                     final int amount = scanner.nextInt();
                     if (amount < 1) {
-                        System.out.println("金額必須大於 0。");
-                        pause(); continue;
+                        System.out.println("無效的金額。");
+                        pause();
+                        continue;
                     }
+
                     final int exchangeFee = (int) Math.ceil(amount * account.bank.getExchangeFeeRate());
                     if (amount + exchangeFee > account.getBalance()) {
-                        System.out.printf("餘額不足！所需總額 (含手續費 %d): %d TWD\n", exchangeFee, amount + exchangeFee);
-                        pause(); continue;
+                        System.out.println("你的餘額不足。");
+                        pause();
+                        continue;
                     }
+
                     final Currency currency = currencies.get(index - 1);
-                    if (account.exchange(currency, amount)) {
-                        System.out.println("換匯成功");
-                    } else {
+                    final boolean transaction = account.exchange(currency, amount);
+                    if (!transaction) {
                         System.out.println("換匯失敗。");
+                        pause();
+                        continue;
                     }
+
+                    System.out.println("換匯成功。");
                     pause();
                     break;
                 }
                 case 3:
-                    System.out.println("--- 您的資產總覽 ---");
-                    System.out.printf("主帳戶: %d TWD\n", account.getBalance());
-                    try {
-                        List<String> walletInfo = account.getWalletBalances();
-                        if (walletInfo.isEmpty()) {
-                            System.out.println("(尚無外幣持有)");
-                        } else {
-                            walletInfo.forEach(info -> System.out.println("外幣錢包 - " + info));
-                        }
-                    } catch (SQLException e) {
-                        System.out.println("讀取錢包資料時出錯。");
-                    }
-                    pause();
-                    break;
-                case 4:
                     account = null;
                     break;
             }
