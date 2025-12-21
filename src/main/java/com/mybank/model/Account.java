@@ -199,4 +199,23 @@ public class Account {
 
         return transaction;
     }
+    public List<String> getWalletBalances() throws SQLException {
+        List<String> wallets = new ArrayList<>();
+        Connection conn = Database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("""
+            SELECT c.name, w.balance
+            FROM wallets w
+            JOIN currencies c ON w.currencyId = c.id
+            WHERE w.accountId = ? AND c.name != 'TWD'
+            """);
+        stmt.setString(1, this.id);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            wallets.add(String.format("%s: %.2f", rs.getString("name"), rs.getDouble("balance")));
+        }
+        rs.close();
+        stmt.close();
+        conn.close();
+        return wallets;
+    }
 }
