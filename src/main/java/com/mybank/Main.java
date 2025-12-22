@@ -6,7 +6,10 @@ import com.mybank.model.Currency;
 import com.mybank.service.Database;
 
 import java.security.spec.RSAOtherPrimeInfo;
+<<<<<<< HEAD
 import java.sql.SQLException;
+=======
+>>>>>>> 34ef8d7 (chore:Show balance when login)
 import java.util.*;
 
 public class Main {
@@ -57,10 +60,15 @@ public class Main {
     private static void userMenu() {
         while (account != null) {
             resetCursor();
+<<<<<<< HEAD
             System.out.println("================================");
             System.out.printf(" 使用者: %s (%s)\n", account.name, account.id);
             System.out.printf(" 帳戶本位幣餘額 (TWD): %d 元\n", account.getBalance());
             System.out.println("================================");
+=======
+            final int balance = account.getBalance();
+            System.out.println("餘額 : " + balance);
+>>>>>>> 34ef8d7 (chore:Show balance when login)
             System.out.println("1. 轉帳");
             System.out.println("2. 換匯");
             System.out.println("3. 查看所有資產");
