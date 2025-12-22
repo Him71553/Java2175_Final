@@ -84,7 +84,7 @@ public class Database {
             stmt.executeUpdate("""
                     CREATE TABLE IF NOT EXISTS currencies (
                         id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
+                        name TEXT UNIQUE NOT NULL,
                         exchangeRate REAL NOT NULL
                     )
                     """);
@@ -100,6 +100,13 @@ public class Database {
                         UNIQUE(accountId, currencyId)
                     )
                     """);
+            stmt.executeUpdate("""
+                    INSERT INTO currencies (name, exchangeRate) VALUES 
+                    ('USD', 32.1), 
+                    ('JPY', 0.21), 
+                    ('EUR', 35.5)
+                    ON CONFLICT(name) DO NOTHING
+                """);
             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM currencies");
             if (rs.next() && rs.getInt(1) == 0) {
                 stmt.executeUpdate("INSERT INTO currencies (id, name, exchangeRate) VALUES (1, 'TWD', 1.0)");
