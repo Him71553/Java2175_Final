@@ -179,7 +179,7 @@ public class Account {
 
     public boolean exchange(Currency currency, int amount) {
         final int amountWithFee = amount + (int) Math.ceil(amount * bank.getExchangeFeeRate());
-        final double exchangedAmount = amount * currency.exchangeRate;
+        final double exchangedAmount = amount / currency.exchangeRate;
         final boolean transaction = Database.executeMultiple(
                 new SqlCommand("""
                         INSERT INTO wallets (accountId, currencyId, balance)
